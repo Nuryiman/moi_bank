@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя страница - Мой банк</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .balance {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4caf50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .note {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Моя страница</h2>
+
+        <div class="info">
+            <div class="info-label">Имя:</div>
+            <div id="user-name">{{ user.name }}</div> <!-- Пример имени пользователя -->
+        </div>
+
+        <div class="info">
+            <div class="info-label">Номер телефона:</div>
+            <div id="user-phone">{{ user.phone_number }}</div> <!-- Пример номера телефона -->
+        </div>
+
+        <div class="balance">
+            Баланс: <span id="user-balance">{{ user.balance }} сом</span> <!-- Пример баланса -->
+        </div>
+
+        <p class="note">Ваш текущий баланс и информация о профиле.</p>
+    </div>
+</body>
+</html>
