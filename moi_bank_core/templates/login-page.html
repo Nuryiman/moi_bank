@@ -78,6 +78,7 @@
     <div class="container">
         <h2>Вход</h2>
         <form action="{% url 'make-login-url' %}" method="post">
+            {% csrf_token %}
             <label for="phone">Номер телефона:</label>
             <input type="text" id="phone" name="phone" placeholder="+996706123456" required>
 

@@ -8,6 +8,7 @@ from django.core.validators import MaxLengthValidator, MinLengthValidator
 class CustomUser(AbstractUser):
     """Модель для пользователей"""
 
+    username = None
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []
 

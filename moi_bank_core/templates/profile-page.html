@@ -64,12 +64,18 @@
     </style>
 </head>
 <body>
+    {% if user.is_authenticated %}
+        <form action="{% url 'make-logout-url'%}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Выйти</button>
+        </form>
+    {% endif %}
     <div class="container">
         <h2>Моя страница</h2>
 
         <div class="info">
             <div class="info-label">Имя:</div>
-            <div id="user-name">{{ user.name }}</div> <!-- Пример имени пользователя -->
+            <div id="user-name">{{ user.first_name }}</div> <!-- Пример имени пользователя -->
         </div>
 
         <div class="info">
@@ -82,6 +88,7 @@
         </div>
 
         <p class="note">Ваш текущий баланс и информация о профиле.</p>
+        <h3><a href="{% url 'add-money-page-url' %}">Начать зарабатывать</a></h3>
     </div>
 </body>
 </html>

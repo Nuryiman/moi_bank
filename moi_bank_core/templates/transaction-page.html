@@ -76,7 +76,8 @@
 <body>
     <div class="container">
         <h2>Перевод средств</h2>
-        <form action="/transfer" method="post">
+        <form action="{% url 'make-transaction-url' %}" method="post">
+            {% csrf_token %}
             <label for="phone">Номер телефона получателя:</label>
             <input type="text" id="phone" name="phone" placeholder="+996706123456" required>
 

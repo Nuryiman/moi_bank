@@ -60,9 +60,12 @@
     <div class="container">
         <h2>Пополнение баланса</h2>
         <div class="balance">
-            Баланс: <span id="user-balance">0</span> сом
+            Баланс: <span id="user-balance">{{ user.balance }}</span> сом
         </div>
-        <button class="button">Добавить 1 cом на баланс</button>
+        <form action="{% url 'add-money-url' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="button">Добавить 1 cом на баланс</button>
+        </form>
     </div>
 
 </body>
