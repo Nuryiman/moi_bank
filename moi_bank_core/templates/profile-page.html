@@ -10,14 +10,63 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             margin: 0;
+            padding: 20px;
             background-color: #f3f4f6;
         }
 
-        .container {
+        /* Контейнер для всей страницы */
+        .page-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Стили для списка транзакций */
+        .transactions-list {
+            width: 250px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .transactions-list h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .transactions-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .transactions-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .transactions-list li:last-child {
+            border-bottom: none;
+        }
+
+        .transactions-list li span {
+            font-weight: bold;
+        }
+
+        /* Стили для контейнера с профилем */
+        .profile-container {
             max-width: 400px;
             width: 100%;
             padding: 20px;
@@ -63,32 +112,40 @@
         }
     </style>
 </head>
+{% include 'header.html' %}
+
 <body>
-    {% if user.is_authenticated %}
-        <form action="{% url 'make-logout-url'%}" method="POST">
-            {% csrf_token %}
-            <button type="submit">Выйти</button>
-        </form>
-    {% endif %}
-    <div class="container">
-        <h2>Моя страница</h2>
-
-        <div class="info">
-            <div class="info-label">Имя:</div>
-            <div id="user-name">{{ user.first_name }}</div> <!-- Пример имени пользователя -->
+    <div class="page-container">
+        <!-- Блок со списком транзакций -->
+        <div class="transactions-list">
+            <h2>Транзакции</h2>
+            <ul>
+                {% for item in user.transactions_history.all %}
+                    <li><span>{% if item.amount > 0 %} Пополнение {% else %} Перевод {% endif %}</span><span>{{ item.amount }} сом</span></li>
+                {% endfor %}
+            </ul>
         </div>
 
-        <div class="info">
-            <div class="info-label">Номер телефона:</div>
-            <div id="user-phone">{{ user.phone_number }}</div> <!-- Пример номера телефона -->
-        </div>
+        <!-- Основной блок профиля -->
+        <div class="profile-container">
+            <h2>Моя страница</h2>
 
-        <div class="balance">
-            Баланс: <span id="user-balance">{{ user.balance }} сом</span> <!-- Пример баланса -->
-        </div>
+            <div class="info">
+                <div class="info-label">Имя:</div>
+                <div id="user-name">{{ user.first_name }}</div>
+            </div>
 
-        <p class="note">Ваш текущий баланс и информация о профиле.</p>
-        <h3><a href="{% url 'add-money-page-url' %}">Начать зарабатывать</a></h3>
+            <div class="info">
+                <div class="info-label">Номер телефона:</div>
+                <div id="user-phone">{{ user.phone_number }}</div>
+            </div>
+
+            <div class="balance">
+                Баланс: <span id="user-balance">{{ user.balance }} сом</span>
+            </div>
+            <h3 class="note">{{ dollar_balance }}$</h3>
+            <p class="note">Ваш текущий баланс и информация о профиле.</p>
+        </div>
     </div>
 </body>
 </html>

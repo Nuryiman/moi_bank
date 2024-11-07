@@ -1,0 +1,83 @@
+<style>
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        background-color: #f0f0f0;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1200px;
+        padding: 10px 20px;
+        background-color: #093214;
+        color: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .logo a {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .nav {
+        display: flex;
+        gap: 15px;
+    }
+
+    .nav-btn {
+        padding: 10px 20px;
+        color: #fff;
+        text-decoration: none;
+        background-color: transparent;
+        border: 2px solid transparent;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .nav-btn:hover {
+        background-color: #555;
+        border-color: #666;
+    }
+
+    .highlight {
+        color: #333;
+        background-color: #4caf50;
+        border: 2px solid #4caf50;
+        font-weight: bold;
+    }
+
+    .highlight:hover {
+        background-color: #4caf50;
+        border-color: #4caf50;
+    }
+
+</style>
+<header class="header">
+        <nav class="nav">
+            <a href="{% url 'profile-url' %}" class="nav-btn">Профиль</a>
+            {% if user.is_authenticated %}
+                <form action="{% url 'make-logout-url'%}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-btn">Выйти</button>
+                </form>
+            {% else %}
+            <a href="{% url 'register-url' %}" class="nav-btn">Регистрация</a>
+            <a href="{% url 'login-url' %}" class="nav-btn">Логин</a>
+            {% endif %}
+            <a href="{% url 'add-money-page-url' %}" class="nav-btn highlight">Начать зарабатывать</a>
+            <a href="{% url 'transaction-page-url' %}" class="nav-btn highlight">Перевод денег</a>
+        </nav>
+    </header>

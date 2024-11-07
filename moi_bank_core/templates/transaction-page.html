@@ -9,7 +9,7 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
+<!--            justify-content: center;-->
             align-items: center;
             min-height: 100vh;
             margin: 0;
@@ -22,6 +22,7 @@
             padding: 20px;
             border-radius: 8px;
             background-color: #ffffff;
+            margin: 0 auto;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -74,6 +75,8 @@
     </style>
 </head>
 <body>
+    {% include 'header.html' %}
+
     <div class="container">
         <h2>Перевод средств</h2>
         <form action="{% url 'make-transaction-url' %}" method="post">
@@ -86,6 +89,11 @@
 
             <input type="submit" value="Перевести средства">
         </form>
+        {% if has_errors %}
+            <div>
+                <p style="color: red">{{ has_errors }}</p>
+            </div>
+        {% endif %}
         <p class="note">Введите номер телефона и сумму для перевода.</p>
     </div>
 </body>

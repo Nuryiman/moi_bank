@@ -1,9 +1,10 @@
+import requests
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth import login, logout
 from django.views import View
-from users.models import CustomUser
+from users.models import CustomUser, TransActionsHistory
 
 
 class RegistrationView(TemplateView):
@@ -31,18 +32,25 @@ class MakeRegistrationView(View):
 		except CustomUser.DoesNotExist:
 			user = CustomUser.objects.create_user(password=password, first_name=name, phone_number=phone_number)
 			login(request, user)
-			return redirect('/profile/')
+			return redirect('profile-url')
 
 
 class ProfileView(TemplateView):
 	template_name = 'profile-page.html'
 
 	def get_context_data(self, **kwargs):
-
 		user = self.request.user
-
+		API_KEY = '3d71e3792343ef04f3cfd570'
+		url = f'https://v6.exchangerate-api.com/v6/{API_KEY}/latest/KGS'
+		response = requests.get(url)
+		if response.status_code == 200:
+			data = response.json()
+			currencies = data['conversion_rates']
+			USD = currencies['USD']
+			user_dollar_balance = USD * user.balance
 		context = {
-			'user': user
+			'user': user,
+			'dollar_balance': round(user_dollar_balance, 1)
 		}
 		return context
 
@@ -54,6 +62,7 @@ class LoginView(TemplateView):
 class MakeLoginView(View):
 
 	def post(self, request, *args, **kwargs):
+
 		data = request.POST
 
 		phone_number = data['phone']
@@ -116,16 +125,38 @@ class MakeTransactionView(View):
 		try:
 			received_user = CustomUser.objects.get(phone_number=to_phone_number)
 		except CustomUser.DoesNotExist:
-			return redirect('transaction-page-url')
-
+			error = 'Такого номера не существует'
+			context = {
+				'has_errors': error
+			}
+			return render(request, 'transaction-page.html', context)
 		amount = data['amount']
 		amount = int(amount)
-		if amount <= sender.balance and amount < 0:
+		if sender.phone_number == to_phone_number:
+			error = 'Невозможно перевести деньги самому себе'
+			context = {
+				'has_errors': error
+			}
+			return render(request, 'transaction-page.html', context)
+		if amount <= sender.balance:
+			if amount <= 0:
+				error = 'Сумма транзакции должна быть больше нуля'
+				context = {
+					'has_errors': error
+				}
+				return render(request, 'transaction-page.html', context)
 			with transaction.atomic():
 				sender.balance -= amount
 				received_user.balance += amount
+				TransActionsHistory.objects.create(user=sender, amount=-amount)
+				TransActionsHistory.objects.create(user=received_user, amount=amount)
 				sender.save()
 				received_user.save()
 				return redirect('profile-url')
+
 		else:
-			return redirect('transaction-page-url')
+			error = 'Недостаточно баланса на счете'
+			context = {
+				'has_errors': error
+			}
+			return render(request, 'transaction-page.html', context)
