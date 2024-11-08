@@ -40,6 +40,7 @@ class ProfileView(TemplateView):
 
 	def get_context_data(self, **kwargs):
 		user = self.request.user
+
 		API_KEY = '3d71e3792343ef04f3cfd570'
 		url = f'https://v6.exchangerate-api.com/v6/{API_KEY}/latest/KGS'
 		response = requests.get(url)
@@ -47,7 +48,7 @@ class ProfileView(TemplateView):
 			data = response.json()
 			currencies = data['conversion_rates']
 			USD = currencies['USD']
-			user_dollar_balance = USD * user.balance
+			user_dollar_balance = USD * user.balance if user.is_authenticated else 0
 		context = {
 			'user': user,
 			'dollar_balance': round(user_dollar_balance, 1)
@@ -100,9 +101,13 @@ class AddMoneyPageView(TemplateView):
 class AddMoneyView(View):
 	def post(self, request, *args, **kwargs):
 		user = request.user
-		user.balance += 1
-		user.save()
-		return render(request=request, template_name='add-money-page.html', context={'user': user})
+
+		if user.is_authenticated:
+			user.balance += 1
+			user.save()
+			return render(request=request, template_name='add-money-page.html', context={'user': user})
+		else:
+			return redirect('login-url')
 
 
 class TransactionView(TemplateView):
